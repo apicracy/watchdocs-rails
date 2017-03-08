@@ -3,6 +3,7 @@ require 'hash'
 require 'array'
 require 'file_store'
 require 'memory_store'
+require 'bridge'
 require 'recordings'
 
 module Watchdocs

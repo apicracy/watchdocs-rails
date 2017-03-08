@@ -14,6 +14,11 @@ module Watchdocs
         clear_recordings
       end
 
+      def send
+        Watchdocs::Bridge.send(current_recordings) &&
+          clear_recordings
+      end
+
       private
 
       def recordings_exists?

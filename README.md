@@ -12,5 +12,17 @@ It captures every JSON response and stores request and response details in json 
 ```ruby
 config.middleware.insert(0, Watchdocs::Middleware)
 ```
-3. Run specs or the app and make some requests.
-4. Check `/tmp/request.json` file. You can test it against JSON linter like [http://jsonlint.com/](http://jsonlint.com/)
+3. Update you spec hooks (for RSpec it's in `specs/rails_helper.rb`)
+
+```ruby
+  config.before(:suite) do
+    ....
+    Watchdocs::Recordings.clear!
+  end
+
+  config.after(:suite) do
+    ....
+    Watchdocs::Recordings.send
+  end
+```
+4. Run specs or the app and make some requests.
