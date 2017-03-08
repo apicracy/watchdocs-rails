@@ -17,19 +17,25 @@ module Watchdocs
       private
 
       def recordings_exists?
-        Watchdocs::Store::JsonFileStore.exists?
+        store.exists?
       end
 
       def current_recordings
-        Watchdocs::Store::JsonFileStore.read
+        store.read
       end
 
       def save_recordings(content)
-        Watchdocs::Store::JsonFileStore.write(content)
+        store.write(content)
       end
 
       def clear_recordings
-        Watchdocs::Store::JsonFileStore.delete!
+        store.delete!
+      end
+
+      def store
+        # TODO: Configuration
+        # Watchdocs::Store::JsonFileStore
+        Watchdocs::Store::MemoryStore
       end
     end
   end

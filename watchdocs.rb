@@ -1,8 +1,9 @@
 require 'object'
 require 'hash'
 require 'array'
-require 'recordings'
 require 'file_store'
+require 'memory_store'
+require 'recordings'
 
 module Watchdocs
   class Middleware
