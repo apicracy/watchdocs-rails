@@ -1,27 +1,31 @@
+require 'mini_memory_store'
+
 module Watchdocs
-  module Store
-    module MemoryStore
-      class << self
-        def write(content)
-          store.set(content)
-        end
+  module Rails
+    module Store
+      module MemoryStore
+        class << self
+          def write(content)
+            store.set(content)
+          end
 
-        def read
-          store.get
-        end
+          def read
+            store.get
+          end
 
-        def delete!
-          store.clear
-        end
+          def delete!
+            store.clear
+          end
 
-        def exists?
-          store.get
-        end
+          def exists?
+            store.get
+          end
 
-        private
+          private
 
-        def store
-          @store ||= MiniMemoryStore.new
+          def store
+            @store ||= MiniMemoryStore.new
+          end
         end
       end
     end

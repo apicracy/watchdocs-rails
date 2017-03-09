@@ -23,8 +23,8 @@ bundle
 Create `config/initializers/watchdocs.rb` and configure the gem if you need to change default configuration:
 
 ```ruby
-  Watchdocs.configure do |c|
-    c.store_class = Watchdocs::Store::MemoryStore
+  Watchdocs::Rails.configure do |c|
+    c.store_class = Watchdocs::Rails::Store::MemoryStore
     c.temp_directory = 'tmp'
     c.sync_url = 'http://demo8792890.mockable.io/requests'
   end
@@ -36,8 +36,8 @@ This option allows you to specify class that is responsible for storing recordin
 
 You can select from provided options:
 
-- `Watchdocs::Store::MemoryStore` **(default)** - stores recordings in memory
-- `Watchdocs::Store::JsonFileStore` - stores in temporary json file
+- `Watchdocs::Rails::Store::MemoryStore` **(default)** - stores recordings in memory
+- `Watchdocs::Rails::Store::JsonFileStore` - stores in temporary json file
 
 or you can implement you own store for recordings. Just create module that implements the following methods:
 
@@ -65,7 +65,7 @@ or you can implement you own store for recordings. Just create module that imple
 
 ### temp_directory
 
-**Applicable only when JsonFileStore enabled as `store_class`**
+**Applicable only when `JsonFileStore` enabled as `store_class`**
 Directory to store temporary file with recordings.
 
 ### sync_url
@@ -79,7 +79,7 @@ URL for syncing with your Watchdocs project.
 If you have some requests specs or features specs that call JSON API then add this line to your `config/environments/test.rb`.
 
 ```ruby
-config.middleware.insert(0, Watchdocs::Middleware)
+config.middleware.insert(0, Watchdocs::Rails::Middleware)
 ```
 
 Update/create your spec hooks:
@@ -91,12 +91,12 @@ In `specs/rails_helper.rb`:
 ```ruby
   config.before(:suite) do
     ....
-    Watchdocs::Recordings.clear!
+    Watchdocs::Rails::Recordings.clear!
   end
 
   config.after(:suite) do
     ....
-    Watchdocs::Recordings.send
+    Watchdocs::Rails::Recordings.send
   end
 ```
 
@@ -105,7 +105,7 @@ In `specs/rails_helper.rb`:
 
 ```
 Minitest.after_run do
-  Watchdocs::Recordings.send
+  Watchdocs::Rails::Recordings.send
 end
 ```
 
@@ -114,10 +114,10 @@ end
 If you don't have any specs yet. You can add the following line to `config/environments/development.rb`.
 
 ```ruby
-config.middleware.insert(0, Watchdocs::Middleware)
+config.middleware.insert(0, Watchdocs::Rails::Middleware)
 ```
 
-Then the only option is to send recordings manually from `rails c` by running `Watchdocs::Recordings.send`.
+Then the only option is to send recordings manually from `rails c` by running `Watchdocs::Rails::Recordings.send`.
 
 **IMPORTANT NOTE: You need to select `JsonFileStore` as storage option in that case.**
 

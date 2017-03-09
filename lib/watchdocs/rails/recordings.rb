@@ -1,46 +1,46 @@
 module Watchdocs
-  # Recording module is responsible for captured requests
-  # managment. Stores new recod
-  module Recordings
-    class << self
-      def record_call(new_call)
-        output = if recordings_exists?
-                   current_recordings << new_call
-                 else
-                   [new_call]
-                 end
-        save_recordings(output)
-      end
+  module Rails
+    module Recordings
+      class << self
+        def record_call(new_call)
+          output = if recordings_exists?
+                     current_recordings << new_call
+                   else
+                     [new_call]
+                   end
+          save_recordings(output)
+        end
 
-      def clear!
-        clear_recordings
-      end
-
-      def send
-        Watchdocs::Bridge.send(current_recordings) &&
+        def clear!
           clear_recordings
-      end
+        end
 
-      private
+        def send
+          Watchdocs::Rails::Bridge.send(current_recordings) &&
+            clear_recordings
+        end
 
-      def recordings_exists?
-        store.exists?
-      end
+        private
 
-      def current_recordings
-        store.read
-      end
+        def recordings_exists?
+          store.exists?
+        end
 
-      def save_recordings(content)
-        store.write(content)
-      end
+        def current_recordings
+          store.read
+        end
 
-      def clear_recordings
-        store.delete!
-      end
+        def save_recordings(content)
+          store.write(content)
+        end
 
-      def store
-        Watchdocs.configuration.sync_url
+        def clear_recordings
+          store.delete!
+        end
+
+        def store
+          Watchdocs::Rails.configuration.store_class
+        end
       end
     end
   end
