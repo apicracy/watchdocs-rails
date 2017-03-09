@@ -1,11 +1,3 @@
-require 'object'
-require 'hash'
-require 'array'
-require 'file_store'
-require 'memory_store'
-require 'bridge'
-require 'recordings'
-
 module Watchdocs
   class Middleware
     attr_reader :app, :report
@@ -63,7 +55,7 @@ module Watchdocs
     end
 
     def record_call
-      Watchdocs::Recordings.record_request(report)
+      Watchdocs::Recordings.record_call(report)
     end
 
     def request_headers(env)

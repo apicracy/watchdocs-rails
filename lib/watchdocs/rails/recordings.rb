@@ -1,11 +1,13 @@
 module Watchdocs
+  # Recording module is responsible for captured requests
+  # managment. Stores new recod
   module Recordings
     class << self
-      def record_request(new_request)
+      def record_call(new_call)
         output = if recordings_exists?
-                   current_recordings << new_request
+                   current_recordings << new_call
                  else
-                   [new_request]
+                   [new_call]
                  end
         save_recordings(output)
       end
@@ -38,9 +40,7 @@ module Watchdocs
       end
 
       def store
-        # TODO: Configuration
-        # Watchdocs::Store::JsonFileStore
-        Watchdocs::Store::MemoryStore
+        Watchdocs.configuration.sync_url
       end
     end
   end

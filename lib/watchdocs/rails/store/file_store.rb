@@ -5,26 +5,26 @@ module Watchdocs
 
       class << self
         def write(content)
-          begin
-            File.write(path_to_file, content.to_json)
-          rescue => e
-            raise StorageError, e
-          end
+          File.write(path_to_file, content.to_json)
           path_to_file
+        rescue StandardError => e
+          raise StorageError, e
         end
 
         def read
-          begin
-            file = File.open(path_to_file, "r")
-          rescue => e
-            raise StorageError, e
-          end
+          file = File.open(path_to_file, 'r')
           JSON.parse(file.read)
+        rescue JSON::ParserError
+          []
+        rescue StandardError => e
+          raise StorageError, e
+        ensure
+          file.close
         end
 
         def delete!
           File.delete(path_to_file)
-        rescue => e
+        rescue StandardError => e
           raise StorageError, e
         end
 
@@ -39,7 +39,7 @@ module Watchdocs
         end
 
         def temp_local_path
-          'tmp' # TODO: Make configurable
+          Watchdocs.configuration.temp_directory
         end
       end
     end

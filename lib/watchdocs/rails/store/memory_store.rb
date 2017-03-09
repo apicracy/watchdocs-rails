@@ -1,8 +1,6 @@
 module Watchdocs
   module Store
     module MemoryStore
-      MEM_KEY_NAME = 'requests'
-
       class << self
         def write(content)
           store.set(content)
@@ -20,14 +18,10 @@ module Watchdocs
           store.get
         end
 
-        def store
-          @store ||= MiniMemoryStore.new
-        end
-
         private
 
-        def key
-          MEM_KEY_NAME
+        def store
+          @store ||= MiniMemoryStore.new
         end
       end
     end
