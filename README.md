@@ -9,7 +9,7 @@ It captures every JSON response, stores request and response details in temporar
 Add to your Gemfile. It is recommended to add to `:test, :development` group.
 
 ```ruby
-gem 'watchdocs-rails', '~> 0.1.0'
+gem 'watchdocs-rails', '~> 0.1.1'
 ```
 
 and run
