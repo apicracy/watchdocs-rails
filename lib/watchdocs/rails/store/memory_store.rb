@@ -2,15 +2,13 @@ module Watchdocs
   module Rails
     module Store
       module MemoryStore
-        attr_accessor :store
-
         class << self
           def write(content)
-            store = content
+            @store = content
           end
 
           def read
-            store
+            @store
           end
 
           def delete!
@@ -18,7 +16,7 @@ module Watchdocs
           end
 
           def exists?
-            store
+            @store
           end
         end
       end
