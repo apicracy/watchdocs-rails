@@ -15,7 +15,7 @@ Gem::Specification.new do |spec|
   spec.description   = 'It captures every JSON response, stores request and
                         response details in temporary storage.
                         Provides methods to send recorded calls to Watchdocs
-                        which checks them agains the documentation or create
+                        which checks them against the documentation or create
                         docs for new calls.'
   spec.homepage      = 'http://watchdocs.io'
 
@@ -28,7 +28,7 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency 'bundler', '~> 1.13'
   spec.add_development_dependency 'rake', '~> 10.0'
-  spec.add_runtime_dependency 'mini_memory_store', '~> 0.1.0'
+  spec.add_development_dependency 'rspec'
   spec.add_runtime_dependency 'httparty', '~> 0.14.0'
   spec.add_runtime_dependency 'configurations', '~> 2.2', '>= 2.2.0'
 end

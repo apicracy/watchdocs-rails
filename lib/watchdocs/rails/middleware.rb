@@ -47,9 +47,9 @@ module Watchdocs
 
       def match_endpoint_pattern
         @report[:endpoint] = begin
-          Rails.application.routes.router.routes
-               .simulator.memos(report[:request][:url])
-               .last.path.spec.to_s.sub('(.:format)', '')
+          ::Rails.application.routes.router.routes
+                 .simulator.memos(report[:request][:url])
+                 .last.path.spec.to_s.sub('(.:format)', '')
         end
       rescue
         @report[:endpoint] = 'No routes match'
