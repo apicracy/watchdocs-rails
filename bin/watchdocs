@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+$: << "." unless $:.include?(".")
+require "bundler/setup"
+require "watchdocs/rails"
+require 'recurrent'
+require 'trollop'
+begin
+  require 'config/environment'
+rescue LoadError
+  nil
+end
+
+opts = Trollop::options do
+  opt :every, "Frequency to perform a task", :type => :string
+end
+opts.merge!({
+  ruby: 'Watchdocs::Rails::Recordings.export(from_specs: false)'
+})
+
+$0 = "recurrent:worker:started-#{Time.now.to_s(:logging)}"
+Recurrent::Worker.new(opts).start

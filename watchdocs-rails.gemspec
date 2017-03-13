@@ -28,9 +28,8 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency 'bundler', '~> 1.13'
   spec.add_development_dependency 'rake', '~> 10.0'
-  spec.add_development_dependency 'rspec'
-  spec.add_runtime_dependency 'httparty', '~> 0.14.0'
-  spec.add_runtime_dependency 'configurations', '~> 2.2', '>= 2.2.0'
-  spec.add_runtime_dependency 'activesupport', '~> 4.2', '>= 4.2.8'
-  spec.add_runtime_dependency 'recurrent', '~> 0.4', '>= 0.4.3'
+  spec.add_runtime_dependency 'httparty', '~> 0', '>= 0.10'
+  spec.add_runtime_dependency 'configurations', '~> 2.0'
+  spec.add_runtime_dependency 'activesupport', '~> 4'
+  spec.add_runtime_dependency 'recurrent', '~> 0.4'
 end
