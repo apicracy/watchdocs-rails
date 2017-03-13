@@ -4,9 +4,9 @@ require 'watchdocs/rails/recordings/exporter'
 module Watchdocs
   module Rails
     module Recordings
-      attr_reader :store
-
       class << self
+        attr_reader :store
+
         def record(new_call, from_specs: true)
           Recorder.new(
             from_specs: from_specs
@@ -21,7 +21,7 @@ module Watchdocs
         def export(recordings = nil, from_specs: true)
           set_store(from_specs)
           recordings ||= current_recordings
-          send_recordings(recordings) && clear!(from_specs)
+          export_recorings(recordings) && clear!(from_specs: from_specs)
         end
 
         private

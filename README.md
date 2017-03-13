@@ -89,6 +89,19 @@ Minitest.after_run do
 end
 ```
 
+#### Configuring with VCR
+
+
+If you are using VCR add this line to your `VCR.configure` block:
+
+```ruby
+VCR.configure do |c|
+  config.ignore_request do |req|
+    req.uri == Watchdocs::Rails.configuration.export_url
+  end
+end
+```
+
 ### Development (manual tests)
 
 If you don't have any request specs yet. You can add the following line to `config/environments/development.rb`.

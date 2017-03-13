@@ -2,21 +2,22 @@ module Watchdocs
   module Rails
     module Recordings
       class Recorder
-        attr_reader :store, :output
+        attr_reader :store, :output, :from_specs
 
         def initialize(from_specs: true)
-          set_store(from_specs)
+          @from_specs = from_specs
+          set_store
         end
 
         def call(new_call)
-          record_new
+          record_new(new_call)
           save_recordings
           send_recordings if buffer_full?
         end
 
         private
 
-        def record_new
+        def record_new(new_call)
           @output = if current_recordings
                      current_recordings << new_call
                     else
@@ -33,10 +34,10 @@ module Watchdocs
         end
 
         def send_recordings
-          Recordings.send(output)
+          Recordings.export(output, from_specs: from_specs)
         end
 
-        def set_store(from_specs)
+        def set_store
           @store = if from_specs
                      Rails::Buffer::MemoryBuffer
                    else

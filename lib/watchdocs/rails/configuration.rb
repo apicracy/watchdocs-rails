@@ -5,7 +5,7 @@ module Watchdocs
     include Configurations
     configurable :buffer_size,
                  :temp_directory,
-                 :sync_url
+                 :export_url
 
     configuration_defaults do |c|
       c.buffer_size = 50
