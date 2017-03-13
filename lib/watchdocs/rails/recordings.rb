@@ -7,7 +7,7 @@ module Watchdocs
       attr_reader :store
 
       class << self
-        def record(new_call, from_specs)
+        def record(new_call, from_specs: true)
           Recorder.new(
             from_specs: from_specs
           ).call(new_call)

@@ -2,7 +2,7 @@ module Watchdocs
   module Rails
     module Recordings
       class Recorder
-      attr_reader :store, :output
+        attr_reader :store, :output
 
         def initialize(from_specs: true)
           set_store(from_specs)
@@ -50,6 +50,7 @@ module Watchdocs
 
         def buffer_size
           Rails.configuration.buffer_size
+        end
       end
     end
   end
