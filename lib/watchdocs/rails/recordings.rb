@@ -1,45 +1,49 @@
+require 'watchdocs/rails/recordings/recorder'
+require 'watchdocs/rails/recordings/exporter'
+
 module Watchdocs
   module Rails
     module Recordings
+      attr_reader :store
+
       class << self
-        def record_call(new_call)
-          output = if recordings_exists?
-                     current_recordings << new_call
-                   else
-                     [new_call]
-                   end
-          save_recordings(output)
+        def record(new_call, from_specs)
+          Recorder.new(
+            from_specs: from_specs
+          ).call(new_call)
         end
 
-        def clear!
+        def clear!(from_specs: true)
+          set_store(from_specs)
           clear_recordings
         end
 
-        def send
-          Watchdocs::Rails::Bridge.send(current_recordings) &&
-            clear_recordings
+        def export(recordings = nil, from_specs: true)
+          recordings ||= current_recordings
+          set_store(from_specs)
+          send_recordings(recordings) && clear!(from_specs)
         end
 
         private
 
-        def recordings_exists?
-          store.exists?
-        end
-
         def current_recordings
           store.read
-        end
-
-        def save_recordings(content)
-          store.write(content)
         end
 
         def clear_recordings
           store.delete!
         end
 
-        def store
-          Watchdocs::Rails.configuration.store_class
+        def export_recorings(recordings)
+          Exporter.export(recordings)
+        end
+
+        def set_store(from_specs)
+          @store = if from_specs
+                     Rails::Buffer::MemoryBuffer
+                   else
+                     Rails::Buffer::FileBuffer
+                   end
         end
       end
     end

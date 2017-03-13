@@ -9,7 +9,7 @@ It captures every JSON response, stores request and response details in temporar
 Add to your Gemfile. It is recommended to add to `:test, :development` group.
 
 ```ruby
-gem 'watchdocs-rails', '~> 0.1.1'
+gem 'watchdocs-rails'
 ```
 
 and run
@@ -24,55 +24,35 @@ Create `config/initializers/watchdocs.rb` and configure the gem if you need to c
 
 ```ruby
   Watchdocs::Rails.configure do |c|
-    c.store_class = Watchdocs::Rails::Store::MemoryStore
+    c.buffer_size = 50
     c.temp_directory = 'tmp'
-    c.sync_url = 'http://demo8792890.mockable.io/requests'
+    c.export_url = 'http://demo8792890.mockable.io/requests'
   end
 ```
 
-### store_class
+### buffer_size
 
-This option allows you to specify class that is responsible for storing recordings.
+**Default:** 50
 
-You can select from provided options:
+Buffer is a place where the gem stores recorderd requests. Buffer size is maximum number of requests that can be stored in a buffer. When limit is reached, buffer content is being exported and cleared. *In other words: Buffer is being exported and cleared every `buffer_size` reqests.*
 
-- `Watchdocs::Rails::Store::MemoryStore` **(default)** - stores recordings in memory
-- `Watchdocs::Rails::Store::JsonFileStore` - stores in temporary json file
-
-or you can implement you own store for recordings. Just create module that implements the following methods:
-
-```ruby
-  # Params
-  # content - is a Ruby Array of Hashes
-  def write(content)
-    ...
-  end
-
-  # Returns Ruby Array of Hashes
-  def read
-    ...
-  end
-
-  def delete!
-    ...
-  end
-
-  # Returns true if store already initialized
-  def exists?
-    ...
-  end
-```
+While executing specs buffer is a memory, otherwise it's a temporary file stored in `temp_directory`.
 
 ### temp_directory
 
-**Applicable only when `JsonFileStore` enabled as `store_class`**
+**Default:** tmp
+
 Directory to store temporary file with recordings.
 
-### sync_url
+### export_url
 
-URL for syncing with your Watchdocs project.
+**Default:** http://demo8792890.mockable.io/requests
+
+URL for exporting recorgings to your Watchdocs project.
 
 ## Usage
+
+You can enable Watchdocs to record request while executing specs or making manual tests. You can of course do both at the same time if you want.
 
 ### Tests
 
@@ -96,7 +76,7 @@ In `specs/rails_helper.rb`:
 
   config.after(:suite) do
     ....
-    Watchdocs::Rails::Recordings.send
+    Watchdocs::Rails::Recordings.export
   end
 ```
 
@@ -105,21 +85,21 @@ In `specs/rails_helper.rb`:
 
 ```
 Minitest.after_run do
-  Watchdocs::Rails::Recordings.send
+  Watchdocs::Rails::Recordings.export
 end
 ```
 
-### Development
+### Development (manual tests)
 
-If you don't have any specs yet. You can add the following line to `config/environments/development.rb`.
+If you don't have any request specs yet. You can add the following line to `config/environments/development.rb`.
 
 ```ruby
 config.middleware.insert(0, Watchdocs::Rails::Middleware)
 ```
 
-Then the only option is to send recordings manually from `rails c` by running `Watchdocs::Rails::Recordings.send`.
+If your app doesn't make a lot of JSON requests please set `buffer_size` to lower number (f.e. 10, it's 50 by default). Watchdocs will be recording all requests in your development environment during manual tests.
 
-**IMPORTANT NOTE: You need to select `JsonFileStore` as storage option in that case.**
+You can of course enable the middleware in any other environment like dev or staging
 
 
 ## Versioning
@@ -141,7 +121,6 @@ as even minimal functionality is not guaranteed to be implemented yet.
 
 - httparty
 - configurations
-- mini_memory_store
 
 ## Contributing
 

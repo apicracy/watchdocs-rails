@@ -1,7 +1,7 @@
 module Watchdocs
   module Rails
     module Store
-      module MemoryStore
+      module MemoryBuffer
         class << self
           def write(content)
             @store = content

@@ -1,7 +1,7 @@
 module Watchdocs
   module Rails
     module Store
-      module JsonFileStore
+      module FileBuffer
         class StorageError < StandardError; end
 
         class << self
@@ -40,7 +40,7 @@ module Watchdocs
           end
 
           def temp_local_path
-            Watchdocs::Rails.configuration.temp_directory
+            Rails.configuration.temp_directory
           end
         end
       end

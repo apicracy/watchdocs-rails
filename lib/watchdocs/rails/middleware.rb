@@ -61,7 +61,13 @@ module Watchdocs
       end
 
       def record_call
-        Watchdocs::Rails::Recordings.record_call(report)
+        Rails::Recordings.record(
+          report, from_specs: from_specs?
+        )
+      end
+
+      def from_specs?
+        ::Rails.env.test?
       end
 
       def request_headers(env)
