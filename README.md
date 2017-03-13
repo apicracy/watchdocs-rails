@@ -134,6 +134,7 @@ as even minimal functionality is not guaranteed to be implemented yet.
 
 - httparty
 - configurations
+- recurrent
 
 ## Contributing
 

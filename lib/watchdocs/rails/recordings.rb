@@ -22,6 +22,7 @@ module Watchdocs
           set_store(from_specs)
           recordings ||= current_recordings
           export_recorings(recordings) && clear!(from_specs: from_specs)
+          $stderr.puts "Watchdocs: #{recordings.count} requests exported"
         end
 
         private
