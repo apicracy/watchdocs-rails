@@ -1,6 +1,6 @@
 module Watchdocs
   module Rails
-    module Store
+    module Buffer
       module FileBuffer
         class StorageError < StandardError; end
 

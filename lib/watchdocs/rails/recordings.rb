@@ -19,8 +19,8 @@ module Watchdocs
         end
 
         def export(recordings = nil, from_specs: true)
-          recordings ||= current_recordings
           set_store(from_specs)
+          recordings ||= current_recordings
           send_recordings(recordings) && clear!(from_specs)
         end
 
