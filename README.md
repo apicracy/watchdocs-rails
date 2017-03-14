@@ -110,9 +110,15 @@ If you don't have any request specs yet. You can add the following line to `conf
 config.middleware.insert(0, Watchdocs::Rails::Middleware)
 ```
 
-If your app doesn't make a lot of JSON requests please set `buffer_size` to lower number (f.e. 10, it's 50 by default). Watchdocs will be recording all requests in your development environment during manual tests.
+To make sure we will receive all recorded request please add this worker command to your `Procfile` or run it manually:
 
-You can of course enable the middleware in any other environment like dev or staging
+```
+watchdocs --every 60.seconds
+```
+
+Watchdocs will be recording all requests in your development environment during manual tests and export them every `buffer_size` requests and every 60 seconds (you can adjust the frequency to your needs).
+
+You can of course enable the middleware in any other environment like `dev` or `staging`.
 
 
 ## Versioning

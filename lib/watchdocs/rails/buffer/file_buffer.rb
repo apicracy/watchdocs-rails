@@ -20,7 +20,7 @@ module Watchdocs
           rescue StandardError => e
             raise StorageError, e
           ensure
-            file.close
+            file && file.close
           end
 
           def delete!

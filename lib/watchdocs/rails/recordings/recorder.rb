@@ -18,7 +18,7 @@ module Watchdocs
         private
 
         def record_new(new_call)
-          @output = if current_recordings
+          @output = if recordings_any?
                      current_recordings << new_call
                     else
                      [new_call]
@@ -31,6 +31,10 @@ module Watchdocs
 
         def save_recordings
           store.write(output)
+        end
+
+        def recordings_any?
+          store.exists?
         end
 
         def send_recordings
