@@ -104,7 +104,7 @@ end
 
 ### Development (manual tests)
 
-If you don't have any request specs yet. You can add the following line to `config/environments/development.rb`.
+If you don't have any request specs yet, you can add the following line to `config/environments/development.rb`.
 
 ```ruby
 config.middleware.insert(0, Watchdocs::Rails::Middleware)
