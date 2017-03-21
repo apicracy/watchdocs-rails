@@ -13,7 +13,8 @@ module Watchdocs
             response = HTTParty.post(
               api_url,
               body: payload.to_json,
-              headers: { 'Content-Type' => 'application/json' }
+              headers: { 'Content-Type' => 'application/json' },
+              basic_auth: api_auth
             )
             check_response(response)
           end
@@ -39,6 +40,13 @@ module Watchdocs
 
           def api_url
             Watchdocs::Rails.configuration.export_url
+          end
+
+          def api_auth
+            {
+              username: Watchdocs::Rails.configuration.api_key,
+              password: Watchdocs::Rails.configuration.api_secret
+            }
           end
         end
       end

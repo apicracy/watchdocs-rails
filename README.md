@@ -26,7 +26,9 @@ Create `config/initializers/watchdocs.rb` and configure the gem if you need to c
   Watchdocs::Rails.configure do |c|
     c.buffer_size = 50
     c.temp_directory = 'tmp'
-    c.export_url = 'http://demo8792890.mockable.io/requests'
+    c.export_url = 'https://watchdocs-api.herokuapp.com/api/v1/project/10/reports'
+    c.api_key = '8L9qh77q9570H0LIz90Aj00T5mcOHW1w'
+    c.api_secret = 'G52uFXHPjyxRY3JdBIsw562uJ8bUdrE2'
   end
 ```
 
@@ -46,9 +48,21 @@ Directory to store temporary file with recordings.
 
 ### export_url
 
-**Default:** http://demo8792890.mockable.io/requests
+**Default:** https://watchdocs-api.herokuapp.com/api/v1/project/10/reports
 
-URL for exporting recorgings to your Watchdocs project.
+URL for exporting recorgings to your Watchdocs project. (Change 10 to a random number)
+
+### api_key
+
+**Default:** 8L9qh77q9570H0LIz90Aj00T5mcOHW1w
+
+API Key which you can get for your Watchdocs project in settings section.
+
+### api_secret
+
+**Default:** G52uFXHPjyxRY3JdBIsw562uJ8bUdrE2
+
+API Secret which you can get for your Watchdocs project in settings section.
 
 ## Usage
 
