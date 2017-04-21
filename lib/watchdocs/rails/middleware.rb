@@ -84,27 +84,32 @@ module Watchdocs
 
       def body_string(body)
         body_string = ''
-        body.each { |line| body_string += line }
+        body.each { |line| body_string += line } if body
         body_string
       end
 
       def parse_response_body(body)
         return if body.empty?
-        JSON.parse(body).filter_data
-      rescue JSON::ParserError
-        'Invalid JSON'
+        filter_body(JSON.parse(body))
+      rescue JSON::ParserError => e
+        { watchdocs_error: "Invalid JSON data: #{e.message}" }
+      rescue StandardError
+        { watchdocs_error: 'Response body format not supported' }
       end
 
       def parse_request_body(body)
         return if body.empty?
-        JSON.parse(body).filter_data
+        filter_body(JSON.parse(body))
       rescue JSON::ParserError
         begin
-          Rack::Utils.parse_nested_query(body)
-                     .filter_data
+          filter_body(Rack::Utils.parse_nested_query(body))
         rescue StandardError
-          'Request body format not supported'
+          { watchdocs_error: 'Request body format not supported' }
         end
+      end
+
+      def filter_body(body)
+        body.is_a?(Enumerable) ? body.filter_data : body
       end
     end
   end
