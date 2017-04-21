@@ -44,8 +44,8 @@ module Watchdocs
 
           def api_auth
             {
-              username: Watchdocs::Rails.configuration.api_key,
-              password: Watchdocs::Rails.configuration.api_secret
+              username: Watchdocs::Rails.configuration.app_id,
+              password: Watchdocs::Rails.configuration.app_secret
             }
           end
         end

@@ -20,17 +20,17 @@ bundle
 
 ## Configuration
 
-Create `config/initializers/watchdocs.rb` and configure the gem if you need to change default configuration:
+Create `config/initializers/watchdocs.rb` and configure the gem with your project credentials:
 
 ```ruby
   Watchdocs::Rails.configure do |c|
-    c.buffer_size = 50
-    c.temp_directory = 'tmp'
-    c.export_url = 'https://watchdocs-api.herokuapp.com/api/v1/project/10/reports'
-    c.api_key = '8L9qh77q9570H0LIz90Aj00T5mcOHW1w'
-    c.api_secret = 'G52uFXHPjyxRY3JdBIsw562uJ8bUdrE2'
+    c.app_id = 'YourAPPid'
+    c.app_secret = 'YourAPPsecret'
   end
 ```
+
+You can get them from your project's Settings page.
+All configuration settings are listed below.
 
 ### buffer_size
 
@@ -48,21 +48,21 @@ Directory to store temporary file with recordings.
 
 ### export_url
 
-**Default:** https://watchdocs-api.herokuapp.com/api/v1/project/10/reports
+**Default:** https://watchdocs-api.herokuapp.com/api/v1/reports
 
-URL for exporting recorgings to your Watchdocs project. (Change 10 to a random number)
+URL for exporting recorgings to your Watchdocs project.
 
-### api_key
+### app_id
 
-**Default:** 8L9qh77q9570H0LIz90Aj00T5mcOHW1w
+**No default value**
 
-API Key which you can get for your Watchdocs project in settings section.
+AppID key which you can get for your Watchdocs project in settings section.
 
-### api_secret
+### app_secret
 
-**Default:** G52uFXHPjyxRY3JdBIsw562uJ8bUdrE2
+**No default value**
 
-API Secret which you can get for your Watchdocs project in settings section.
+App Secret key which you can get for your Watchdocs project in settings section.
 
 ## Usage
 
