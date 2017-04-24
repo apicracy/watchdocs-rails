@@ -1,6 +1,7 @@
 require 'watchdocs/rails/core_extensions'
 require 'watchdocs/rails/buffer'
 require 'watchdocs/rails/configuration'
+require 'watchdocs/rails/helpers'
 require 'watchdocs/rails/middleware'
 require 'watchdocs/rails/recordings'
 

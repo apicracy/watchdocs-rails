@@ -1,6 +1,10 @@
 module Watchdocs
   module Rails
     class Middleware
+      include Rails::Helpers::HeadersHelper
+      include Rails::Helpers::BodyHelper
+      include Rails::Helpers::QueryStringHelper
+
       attr_reader :app, :report
 
       def initialize(app)
@@ -10,12 +14,16 @@ module Watchdocs
 
       def call(env)
         app.call(env).tap do |response|
-          if json_response?(response)
-            clear_report
-            catch_request(env)
-            catch_response(response)
-            match_endpoint_pattern
-            record_call
+          begin
+            if json_response?(response)
+              clear_report
+              catch_request(env)
+              catch_response(response)
+              match_endpoint_pattern
+              record_call
+            end
+          rescue StandardError => e
+            $stderr.puts "Watchdocs Middleware Error: #{e.message}"
           end
         end
       end
@@ -35,7 +43,7 @@ module Watchdocs
         @report[:request] = {
           method: env['REQUEST_METHOD'],
           url: env['PATH_INFO'],
-          query_string_params: Rack::Utils.parse_nested_query(env['QUERY_STRING']),
+          query_string_params: parse_query_string(env['QUERY_STRING']),
           body: parse_request_body(env['rack.input'].read),
           headers: request_headers(env)
         }
@@ -70,46 +78,8 @@ module Watchdocs
         ::Rails.env.test?
       end
 
-      def request_headers(env)
-        env.keys
-           .select { |k| k.start_with? 'HTTP_' }
-           .map { |k| format_header(k) }
-           .sort
-      end
-
-      def format_header(header)
-        header.sub(/^HTTP_/, '')
-              .tr('_', '-')
-      end
-
-      def body_string(body)
-        body_string = ''
-        body.each { |line| body_string += line } if body
-        body_string
-      end
-
-      def parse_response_body(body)
-        return if body.empty?
-        filter_body(JSON.parse(body))
-      rescue JSON::ParserError => e
-        { watchdocs_error: "Invalid JSON data: #{e.message}" }
-      rescue StandardError
-        { watchdocs_error: 'Response body format not supported' }
-      end
-
-      def parse_request_body(body)
-        return if body.empty?
-        filter_body(JSON.parse(body))
-      rescue JSON::ParserError
-        begin
-          filter_body(Rack::Utils.parse_nested_query(body))
-        rescue StandardError
-          { watchdocs_error: 'Request body format not supported' }
-        end
-      end
-
-      def filter_body(body)
-        body.is_a?(Enumerable) ? body.filter_data : body
+      def filter_data(data)
+        data.is_a?(Enumerable) ? data.filter_data : data
       end
     end
   end
