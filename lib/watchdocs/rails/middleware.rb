@@ -1,7 +1,6 @@
 module Watchdocs
   module Rails
     class Middleware
-      include Rails::Helpers::HeadersHelper
       include Rails::Helpers::BodyHelper
       include Rails::Helpers::QueryStringHelper
 
@@ -44,8 +43,7 @@ module Watchdocs
           method: env['REQUEST_METHOD'],
           url: env['PATH_INFO'],
           query_string_params: parse_query_string(env['QUERY_STRING']),
-          body: parse_request_body(env['rack.input'].read),
-          headers: request_headers(env)
+          body: parse_request_body(env['rack.input'].read)
         }
       end
 
@@ -53,7 +51,6 @@ module Watchdocs
         status, headers, body = *response
         @report[:response] = {
           status: status,
-          headers: headers.to_hash.upcased_keys,
           body: parse_response_body(body_string(body))
         }
       end

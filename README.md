@@ -103,6 +103,18 @@ Minitest.after_run do
 end
 ```
 
+#### Configuring with WebMock
+
+
+If you are using WebMock and it complains about real HTTP call please disable it for when exporting data to our API.
+
+  config.after(:suite) do
+    ....
+    WebMock.disable!
+    Watchdocs::Rails::Recordings.export
+    WebMock.enable!
+  end
+
 #### Configuring with VCR
 
 

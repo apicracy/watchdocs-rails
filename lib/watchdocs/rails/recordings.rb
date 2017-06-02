@@ -16,13 +16,20 @@ module Watchdocs
         def clear!(from_specs: true)
           set_store(from_specs)
           clear_recordings
+        rescue StandardError => e
+          $stderr.puts "Watchdocs Error: #{e.message}.
+                        Please report it to contact@watchdocs.io"
         end
 
         def export(recordings = nil, from_specs: true)
           set_store(from_specs)
           recordings ||= current_recordings
+          return unless current_recordings
           export_recorings(recordings) && clear!(from_specs: from_specs)
           $stderr.puts "Watchdocs: #{recordings.count} requests exported"
+        rescue StandardError => e
+          $stderr.puts "Watchdocs Error: #{e.message}.
+                        Please report it to contact@watchdocs.io"
         end
 
         private
