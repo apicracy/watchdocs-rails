@@ -33,7 +33,7 @@ module Watchdocs
           end
 
           def get_error(response_body)
-            JSON.parse(response_body)['errors'].join(', ')
+            JSON.parse(response_body)['errors']
           rescue
             DEFAULT_ERROR
           end

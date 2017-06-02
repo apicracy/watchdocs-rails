@@ -18,7 +18,7 @@ module Watchdocs
           clear_recordings
         rescue StandardError => e
           $stderr.puts "Watchdocs Error: #{e.message}.
-                        Please report it to contact@watchdocs.io"
+                        Please report it to hi@watchdocs.io"
         end
 
         def export(recordings = nil, from_specs: true)
@@ -29,7 +29,7 @@ module Watchdocs
           $stderr.puts "Watchdocs: #{recordings.count} requests exported"
         rescue StandardError => e
           $stderr.puts "Watchdocs Error: #{e.message}.
-                        Please report it to contact@watchdocs.io"
+                        Please report it to hi@watchdocs.io"
         end
 
         private
