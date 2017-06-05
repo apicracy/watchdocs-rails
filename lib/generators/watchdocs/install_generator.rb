@@ -3,66 +3,108 @@ require 'colorize'
 
 module Watchdocs
   module Generators
+    MissingCredentialsError = Class.new(Thor::Error)
+
     class InstallGenerator < ::Rails::Generators::Base
+      source_root File.expand_path('../../templates', __FILE__)
+
       class_option :app_id, type: :string
       class_option :app_secret, type: :string
 
       def create_initializer_file
-        # TODO: Catch on missing app_id or app_secret
+        if !options['app_id'].present? || !options['app_secret'].present?
+          raise MissingCredentialsError, <<-ERROR.strip_heredoc
+          --app_id or/and --app_secret options is missing
+          Please specify both with credentials from Settings tab of your project.
+          ERROR
+        end
+
         initializer 'watchdocs.rb' do
-          <<-RUBY
-Watchdocs::Rails.configure do |c|
-  c.app_id = '#{options['app_id']}'
-  c.app_secret = '#{options['app_secret']}'
-end
-          RUBY
+          <<-END.gsub(/^\s+\|/, '')
+            |Watchdocs::Rails.configure do |c|
+            |  c.app_id = '#{options['app_id']}'
+            |  c.app_secret = '#{options['app_secret']}'
+            |end
+          END
         end
       end
 
       def install_with_specs
-        if yes?('Do you have any request specs? Would you like to use Watchdocs with them in test environment?')
+        if yes?('Do you have any request specs? Would you like to use Watchdocs with them in test environment? [y,n]')
           application(nil, env: 'test') do
             'config.middleware.insert(0, Watchdocs::Rails::Middleware)'
           end
+          if yes?('  Do you test with RSpec? [y,n]')
+            template 'rspec.rb', 'spec/support/watchdocs.rb'
+            begin
+              append_file 'spec/rails_helper.rb', "require 'support/watchdocs.rb'"
+            rescue Errno::ENOENT
+              warning = <<-END.gsub(/^\s+\|/, '')
+                |  You don't have rails_helper.rb, so please add the following line
+                |  to the file where you have your RSpec configuration.
+                |  -------------------------------
+                |  require 'support/watchdocs.rb'
+                |  -------------------------------
+              END
+              puts warning.yellow
+            end
+          elsif yes?('  Ok, maybe you test with a Minitest? [y,n]')
+            begin
+              append_file 'test/test_helper.rb',
+                        'Minitest.after_run { Watchdocs::Rails::Recordings.export }'
+            rescue Errno::ENOENT
+              warning = <<-END.gsub(/^\s+\|/, '')
+                |  You don't have test_helper.rb, so please add the following line
+                |  to the file where you have your Minitest configuration.
+                |  ----------------------------------------------------------
+                |  Minitest.after_run { Watchdocs::Rails::Recordings.export }
+                |  ----------------------------------------------------------
+              END
+              puts warning.yellow
+            end
+          else
+            warning = <<-END.gsub(/^\s+\|/, '')
+              |  We are sorry, but we don't have auto setup for you testing framework.
+              |  You need to manually add the following line to be executed after all your specs:
+              |  -----------------------------------
+              |  Watchdocs::Rails::Recordings.export
+              |  -----------------------------------
+            END
+            puts warning.yellow
+          end
           puts 'Watchdocs enabled for test environment!'.green
-#           inject_into_file 'config/initializers/watchdocs.rb', before: 'end\n' do
-#             <<-RUBY
-# c.using_with_specs = true
-#             RUBY
-#           end
+
         end
       end
 
       def install_with_runtime
-        if yes?('Do you want to record your API endpoints in developent environment? ')
+        if yes?('Do you want to record your API endpoints in developent environment? [y,n]')
           application(nil, env: 'development') do
-            "config.middleware.insert(0, Watchdocs::Rails::Middleware)"
+            'config.middleware.insert(0, Watchdocs::Rails::Middleware)'
           end
-          if yes?('Do you use Procfile to run your app?')
+          if yes?('  Do you use Procfile to run your app? [y,n]')
             append_file 'Procfile', 'watchdocs: watchdocs --every 60.seconds'
             puts 'Watchdocs worker added to your Procfile!'.green
           else
-            info = <<-EOS
-
-To make sure we will receive all recorded request please run this worker command with your app:
------------------------------
-watchdocs --every 60.seconds
------------------------------
-            EOS
-            puts info.blue
+            warning = <<-END.gsub(/^\s+\|/, '')
+              |  To make sure we will receive all recorded request please run this worker command with your app:
+              |  -----------------------------
+              |  watchdocs --every 60.seconds
+              |  -----------------------------
+            END
+            puts warning.yellow
 
           end
-          info = <<-EOS
-
-If you would like to enable recording in any other environment (f.e. dev server, staging)
-just add the following line to you 'config/environments/{env}.rb':
------------------------------------------------------------
-  config.middleware.insert(0, Watchdocs::Rails::Middleware)
------------------------------------------------------------
-          EOS
-          puts info.blue
-          puts 'Setup is completed. Now run your specs or your app and make some requests!'.green
+          info = <<-END.gsub(/^\s+\|/, '')
+            |  If you would like to enable recording in any other environment (f.e. dev server, staging)
+            |  just add the following line to you 'config/environments/{env}.rb':
+            |  -----------------------------------------------------------
+            |    config.middleware.insert(0, Watchdocs::Rails::Middleware)
+            |  -----------------------------------------------------------
+          END
+          puts info.light_blue
         end
+        puts 'Setup is completed. Now run your app and make some requests! Check app.watchdocs.io after a minute or so.'.green
       end
     end
   end
