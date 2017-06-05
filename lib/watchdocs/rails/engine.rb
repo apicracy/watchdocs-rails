@@ -1,5 +1,6 @@
 module Watchdocs
   module Rails
-    VERSION = '0.11.0'
+    class Engine < Rails::Engine
+    end
   end
 end
