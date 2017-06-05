@@ -32,4 +32,5 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'configurations', '~> 2.0'
   spec.add_runtime_dependency 'activesupport', '>4', '<6'
   spec.add_runtime_dependency 'recurrent', '~> 0.4'
+  spec.add_runtime_dependency 'colorize', '~> 0.8.1'
 end
