@@ -30,8 +30,8 @@ module Watchdocs
       end
 
       def install_with_specs
-        if yes?('Do you have any request specs? Would you like to use Watchdocs with them in test environment? [y,n]')
-          application(nil, env: 'test') do
+        if yes?('Do you want to generate docs on your test run? (requires feature/request specs) [y,n]')
+          environment(nil, env: 'test') do
             'config.middleware.insert(0, Watchdocs::Rails::Middleware)'
           end
           if yes?('  Do you test with RSpec? [y,n]')
@@ -78,8 +78,8 @@ module Watchdocs
       end
 
       def install_with_runtime
-        if yes?('Do you want to record your API endpoints in developent environment? [y,n]')
-          application(nil, env: 'development') do
+        if yes?('Do you want to generate docs from your local API calls? (in development env) [y,n]')
+          environment(nil, env: 'development') do
             'config.middleware.insert(0, Watchdocs::Rails::Middleware)'
           end
           if yes?('  Do you use Procfile to run your app? [y,n]')
@@ -105,6 +105,30 @@ module Watchdocs
           puts info.light_blue
         end
         puts 'Setup is completed. Now run your app and make some requests! Check app.watchdocs.io after a minute or so.'.green
+      end
+
+      private
+
+      def environment(data = nil, options = {})
+        sentinel = /class [a-z_:]+ < Rails::Application/i
+        env_file_sentinel = /\.configure do/
+        data = yield if !data && block_given?
+
+        in_root do
+          if options[:env].nil?
+            inject_into_file 'config/application.rb',
+                             "\n    #{data}",
+                             after: sentinel,
+                             verbose: false
+          else
+            Array(options[:env]).each do |env|
+              inject_into_file "config/environments/#{env}.rb",
+                               "\n  #{data}",
+                               after: env_file_sentinel,
+                               verbose: false
+            end
+          end
+        end
       end
     end
   end
