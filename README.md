@@ -18,19 +18,27 @@ and run
 bundle
 ```
 
+and then fire the installation script
+
+```
+rails g watchdocs:install --app_id your_app_id --app_secret your_app_secret
+```
+
+and your are good to go! Go to the usage section to for details.
+
+
 ## Configuration
 
-Create `config/initializers/watchdocs.rb` and configure the gem with your project credentials:
+After running installation script you can change the configuration in `config/initializers/watchdocs.rb` which looks like that:
 
 ```ruby
   Watchdocs::Rails.configure do |c|
-    c.app_id = 'YourAPPid'
-    c.app_secret = 'YourAPPsecret'
+    c.app_id = 'your_app_id'
+    c.app_secret = 'your_app_secret'
   end
 ```
 
-You can get them from your project's Settings page.
-All configuration settings are listed below.
+All configuration options are listed below.
 
 ### buffer_size
 
@@ -68,7 +76,9 @@ App Secret key which you can get for your Watchdocs project in settings section.
 
 You can enable Watchdocs to record request while executing specs or making manual tests. You can of course do both at the same time if you want.
 
-### Tests
+**NOTE:**: If you've fired installation script, you don't have to copy any code from this section as the script gracefully did it for you.
+
+### Specs
 
 If you have some requests specs or features specs that call JSON API then add this line to your `config/environments/test.rb`.
 
@@ -127,6 +137,13 @@ VCR.configure do |c|
   end
 end
 ```
+
+#### Running specs
+
+Run your specs as usual. Watchdocs will let you know about recorderd API calls.
+
+**NOTE:** Watchdocs doesn't work with controller specs as they don't actually make full reqests (that's why we don't recommend them). If you have controllers specs only don't worry and go to the next section to see how you can use Watchdocs in your project.
+
 
 ### Development (manual tests)
 
