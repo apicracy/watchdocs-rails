@@ -20,7 +20,7 @@ bundle
 
 and then fire the installation script
 
-```
+```ruby
 rails g watchdocs:install --app_id your_app_id --app_secret your_app_secret
 ```
 
@@ -118,12 +118,14 @@ end
 
 If you are using WebMock and it complains about real HTTP call please disable it for when exporting data to our API.
 
+```ruby
   config.after(:suite) do
     ....
     WebMock.disable!
     Watchdocs::Rails::Recordings.export
     WebMock.enable!
   end
+```
 
 #### Configuring with VCR
 
