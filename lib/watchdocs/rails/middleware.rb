@@ -14,7 +14,7 @@ module Watchdocs
       def call(env)
         app.call(env).tap do |response|
           begin
-            if json_response?(response)
+            if record_response?(response)
               clear_report
               catch_request(env)
               catch_response(response)
@@ -29,8 +29,16 @@ module Watchdocs
 
       private
 
-      def json_response?(response)
-        headers = response.second
+      def record_response?(response)
+        status, headers, _body = *response
+        no_content_response?(status) || json_response?(headers)
+      end
+
+      def no_content_response?(status)
+        status.to_i == 204
+      end
+
+      def json_response?(headers)
         headers['Content-Type'] && headers['Content-Type'].include?('json')
       end
 
@@ -61,8 +69,6 @@ module Watchdocs
                  .simulator.memos(report[:request][:url])
                  .last.path.spec.to_s.sub('(.:format)', '')
         end
-      rescue
-        @report[:endpoint] = 'No routes match'
       end
 
       def record_call

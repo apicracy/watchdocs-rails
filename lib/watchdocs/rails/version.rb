@@ -1,5 +1,5 @@
 module Watchdocs
   module Rails
-    VERSION = '0.11.1'
+    VERSION = '0.11.2'.freeze
   end
 end
